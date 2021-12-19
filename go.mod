@@ -19,6 +19,7 @@ require (
 	github.com/jackc/pgx v3.2.0+incompatible // indirect
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/kshvakov/clickhouse v1.3.4 // indirect
+	github.com/lib/pq v1.10.4 // indirect
 	github.com/mongodb/mongo-go-driver v0.1.0 // indirect
 	github.com/openzipkin/zipkin-go v0.1.1 // indirect
 	github.com/spf13/viper v1.10.1
