@@ -27,11 +27,10 @@ func (l *Locker) LoadAndDelete(key Flags) (interface{}, bool) {
 	return l.data.LoadAndDelete(key)
 }
 
-func getKeyContext(ctx context.Context) interface{} {
+func getKeyContext(ctx context.Context) Key {
 	iCtx := (*iface)(unsafe.Pointer(&ctx))
 	valCtx := (*valueCtx)(unsafe.Pointer(iCtx.data))
-	
-	return valCtx.key
+	return valCtx.key.(Key)
 }
 
 func extract(ctx context.Context) (Values, bool) {
@@ -39,13 +38,13 @@ func extract(ctx context.Context) (Values, bool) {
 		lock = new(Locker)
 		ok   bool
 	)
-	
+
 	if ctx == nil {
 		return lock, false
 	}
-	
+
 	key := getKeyContext(ctx)
-	
+
 	lock, ok = ctx.Value(key).(*Locker)
 	return lock, ok
 }

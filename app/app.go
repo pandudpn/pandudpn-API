@@ -3,10 +3,15 @@ package app
 import (
 	"pandudpn/api/app/dbc"
 	"pandudpn/api/app/dbc/sql"
+	"pandudpn/api/src/controller"
+	"pandudpn/api/src/controller/jobcontroller"
+	"pandudpn/api/src/middleware"
 	"pandudpn/api/src/repository"
 	"pandudpn/api/src/repository/jobrepo"
+	"pandudpn/api/src/routes"
 	"pandudpn/api/src/usecase"
 	"pandudpn/api/src/usecase/jobuc"
+	"pandudpn/api/src/utils/config"
 )
 
 type app struct {
@@ -15,6 +20,8 @@ type app struct {
 	jobRepo repository.JobRepositoryInterface
 	// usecase
 	jobUc usecase.JobUseCaseInterface
+	// controller
+	jobC controller.JobControllerInterface
 }
 
 func NewApp() *app {
@@ -25,6 +32,16 @@ func (a *app) Register() {
 	a.registerDatabase()
 	a.registerRepo()
 	a.registerUseCase()
+	a.registerController()
+
+	mdl := middleware.NewMiddleware(config.Logrus())
+
+	router := routes.Route{
+		Middleware:    mdl,
+		JobController: a.jobC,
+	}
+
+	router.Router()
 }
 
 func (a *app) registerDatabase() {
@@ -46,4 +63,10 @@ func (a *app) registerUseCase() {
 	// job experiences
 	job := jobuc.NewJobUseCase(a.jobRepo)
 	a.jobUc = job
+}
+
+func (a *app) registerController() {
+	// Job experiences
+	job := jobcontroller.NewJobController(a.jobUc)
+	a.jobC = job
 }

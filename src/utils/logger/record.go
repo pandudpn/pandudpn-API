@@ -11,9 +11,10 @@ import (
 	"runtime"
 	"strings"
 	"time"
-	
+
+	"pandudpn/api/src/utils/config"
+
 	"github.com/google/uuid"
-	"gitlab.com/axisnet-revamp/go-utils/config"
 )
 
 // Initialize for init first context from http rest api
@@ -24,7 +25,7 @@ func Initialize(req *http.Request) (*http.Request, DataLogger) {
 		lock     = new(Locker)
 		dl       DataLogger
 	)
-	
+
 	dl.RequestId = uuid.New().String()
 	dl.Type = rest
 	dl.Service = getServiceName()
@@ -34,9 +35,9 @@ func Initialize(req *http.Request) (*http.Request, DataLogger) {
 	dl.TimeStart = start
 	dl.RequestHeader = dumpHeaderFromRequest(req)
 	dl.RequestBody = dumpBodyFromRequest(req)
-	
+
 	ctx := context.WithValue(req.Context(), logKey, lock)
-	
+
 	return req.WithContext(ctx), dl
 }
 
@@ -50,20 +51,20 @@ func InitializeGRPC(ctx context.Context, i interface{}) (context.Context, DataLo
 		lock     = new(Locker)
 		dl       DataLogger
 	)
-	
+
 	function, _, _, _ := runtime.Caller(1)
 	functionName := runtime.FuncForPC(function).Name()
-	
+
 	dl.RequestId = uuid.New().String()
 	dl.Type = grpc
 	dl.Service = getServiceName()
 	dl.Host = functionName
 	dl.RequestMethod = http.MethodPost
 	dl.TimeStart = start
-	dl.RequestBody = dumpBodyFromGrpc(i)
-	
+	// dl.RequestBody = dumpBodyFromGrpc(i)
+
 	ctx = context.WithValue(ctx, grpcKey, lock)
-	
+
 	return ctx, dl
 }
 
@@ -75,18 +76,18 @@ func InitializeCron() (context.Context, DataLogger) {
 		lock     = new(Locker)
 		dl       DataLogger
 	)
-	
+
 	function, _, _, _ := runtime.Caller(1)
 	functionName := runtime.FuncForPC(function).Name()
-	
+
 	dl.RequestId = uuid.New().String()
 	dl.Type = cron
 	dl.Service = getServiceName()
 	dl.Host = functionName
 	dl.TimeStart = start
-	
+
 	ctx := context.WithValue(context.Background(), cronKey, lock)
-	
+
 	return ctx, dl
 }
 
@@ -96,19 +97,19 @@ func (th ThirdParty) Store(ctx context.Context) {
 		data []ThirdParty
 		val  Values
 	)
-	
+
 	val, ok := extract(ctx)
 	if !ok {
 		return
 	}
-	
+
 	tmp, ok := val.LoadAndDelete(_ThirdParties)
 	if ok {
 		data = tmp.([]ThirdParty)
 	}
-	
+
 	data = append(data, th)
-	
+
 	val.Set(_ThirdParties, data)
 }
 
@@ -116,15 +117,21 @@ func (th ThirdParty) Store(ctx context.Context) {
 func Response(ctx context.Context, status int, res interface{}, err error) {
 	value, ok := extract(ctx)
 	if !ok {
+		Log.Error(ctx, "error extract")
 		return
+	}
+
+	if err != nil {
+		value.Set(_ErrorMessage, err.Error())
 	}
 	// check total string for response
 	if res != nil {
 		buf, err := json.Marshal(res)
 		if err != nil {
+			Log.Error(ctx, err)
 			return
 		}
-		
+
 		if len(buf) > 1000 {
 			value.Set(_Response, success)
 		} else {
@@ -132,20 +139,16 @@ func Response(ctx context.Context, status int, res interface{}, err error) {
 		}
 	}
 	value.Set(_StatusCode, status)
-	
-	if err != nil {
-		value.Set(_ErrorMessage, err.Error())
-	}
 }
 
 // dumpHeaderFromRequest for getting all request from header http_rest_api
 func dumpHeaderFromRequest(req *http.Request) map[string]interface{} {
 	var reqHeader = make(map[string]interface{})
-	
+
 	for key, value := range req.Header {
 		reqHeader[key] = strings.Join(value, ",")
 	}
-	
+
 	return reqHeader
 }
 
@@ -159,7 +162,7 @@ func dumpBodyFromRequest(req *http.Request) map[string]interface{} {
 	}
 	// put again body to payload request
 	req.Body = ioutil.NopCloser(bytes.NewBuffer(buf))
-	
+
 	// check total len of request body
 	// this is for handle when payload has sending image (binary)
 	if len(buf) > 1000 {
@@ -170,7 +173,7 @@ func dumpBodyFromRequest(req *http.Request) map[string]interface{} {
 			return reqBody
 		}
 	}
-	
+
 	return reqBody
 }
 
@@ -182,13 +185,13 @@ func dumpBodyFromGrpc(i interface{}) map[string]interface{} {
 	if err != nil {
 		return reqBody
 	}
-	
+
 	// set data to map
 	err = json.Unmarshal(buf, &reqBody)
 	if err != nil {
 		return reqBody
 	}
-	
+
 	return reqBody
 }
 
