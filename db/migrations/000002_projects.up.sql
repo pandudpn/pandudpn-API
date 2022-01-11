@@ -1,15 +1,15 @@
-CREATE TABLE IF NOT EXISTS "jobs" (
+CREATE TABLE IF NOT EXISTS "projects" (
     id uuid default gen_random_uuid() not null
-        constraint jobs_pk
+        constraint projects_pk
             primary key,
-    office varchar(50) not null,
+    name varchar not null,
     description text not null,
-    still_working bool default false,
+    demo_link varchar,
+    slug varchar not null,
     start_at timestamp not null,
-    end_at timestamp,
     created_at timestamp default now() not null,
     updated_at timestamp,
     deleted_at timestamp
 );
 
-CREATE UNIQUE INDEX jobs_id_uindex ON "jobs" (id);
+CREATE UNIQUE INDEX projects_id_uindex ON "projects" (id);
