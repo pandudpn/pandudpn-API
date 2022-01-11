@@ -8,12 +8,11 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
-
+	
 	"pandudpn/api/src/utils/config"
-
+	
 	"github.com/google/uuid"
 )
 
@@ -39,56 +38,6 @@ func Initialize(req *http.Request) (*http.Request, DataLogger) {
 	ctx := context.WithValue(req.Context(), logKey, lock)
 
 	return req.WithContext(ctx), dl
-}
-
-// InitializeGRPC for init first context from grpc server
-// @param context from parameter grpc
-// @param i is param from payload request
-func InitializeGRPC(ctx context.Context, i interface{}) (context.Context, DataLogger) {
-	var (
-		timezone = config.Timezone()
-		start    = time.Now().In(timezone)
-		lock     = new(Locker)
-		dl       DataLogger
-	)
-
-	function, _, _, _ := runtime.Caller(1)
-	functionName := runtime.FuncForPC(function).Name()
-
-	dl.RequestId = uuid.New().String()
-	dl.Type = grpc
-	dl.Service = getServiceName()
-	dl.Host = functionName
-	dl.RequestMethod = http.MethodPost
-	dl.TimeStart = start
-	// dl.RequestBody = dumpBodyFromGrpc(i)
-
-	ctx = context.WithValue(ctx, grpcKey, lock)
-
-	return ctx, dl
-}
-
-// InitializeCron for init first context from grpc server
-func InitializeCron() (context.Context, DataLogger) {
-	var (
-		timezone = config.Timezone()
-		start    = time.Now().In(timezone)
-		lock     = new(Locker)
-		dl       DataLogger
-	)
-
-	function, _, _, _ := runtime.Caller(1)
-	functionName := runtime.FuncForPC(function).Name()
-
-	dl.RequestId = uuid.New().String()
-	dl.Type = cron
-	dl.Service = getServiceName()
-	dl.Host = functionName
-	dl.TimeStart = start
-
-	ctx := context.WithValue(context.Background(), cronKey, lock)
-
-	return ctx, dl
 }
 
 // Store for storing data context to third parties

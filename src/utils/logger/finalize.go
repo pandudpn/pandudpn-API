@@ -37,11 +37,6 @@ func (d *DataLogger) Finalize(ctx context.Context) {
 	}
 
 	d.ExecTime = time.Since(d.TimeStart).Seconds()
-
-	key := getKeyContext(ctx)
-	if key != logKey {
-		d.write()
-	}
 }
 
 func (d *DataLogger) write() {

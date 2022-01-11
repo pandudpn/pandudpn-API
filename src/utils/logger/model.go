@@ -21,26 +21,18 @@ type (
 )
 
 const (
-	// cronKey is key context for cronjob service
-	cronKey = Key(25)
-	// grpcKey is key context for grpc server
-	grpcKey = Key(28)
 	// logKey is key context for request http rest api
 	logKey = Key(31)
-	
-	// cron is type for logging cron
-	cron ServiceType = "cron"
-	// grpc is type for logging grpc server
-	grpc ServiceType = "grpc"
+
 	// rest is type for logging http rest api
 	rest ServiceType = "http_rest_api"
-	
+
 	_StatusCode   Flags = "StatusCode"
 	_Response     Flags = "Response"
 	_LogMessages  Flags = "LogMessages"
 	_ThirdParties Flags = "ThirdParties"
 	_ErrorMessage Flags = "ErrorMessage"
-	
+
 	// list type of logger
 	debug   = "DEBUG"
 	print   = "PRINT"
