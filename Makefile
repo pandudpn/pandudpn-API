@@ -20,7 +20,11 @@ tools:
 
 # migrate-create will create migration file. this file will include for `drop table` and `create table`
 migrate-create:
-	migrate create -ext sql -dir $(MIGRATIONS_PATH) $(filter-out $@,$(MAKECMDGOALS))
+	migrate create -ext sql -dir $(MIGRATIONS_PATH) --seq $(filter-out $@,$(MAKECMDGOALS))
+
+# migrate-version will force to version on schema_migration
+migrate-version:
+	migrate --path $(MIGRATIONS_PATH) --database "$(DATABASE_URL)" force $(filter-out $@,$(MAKECMDGOALS))
 
 # migrate-up will create all table inside migration_path
 migrate-up:
