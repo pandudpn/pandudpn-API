@@ -2,13 +2,15 @@ package jobrepo
 
 import "pandudpn/api/src/model"
 
-const (
-	queryFindAllJobs = "select * from job_experiences"
-)
+const queryFindAllJobs = `
+SELECT id, office, start_at, end_at, description, created_at, updated_at, deleted_at
+FROM jobs
+WHERE deleted_at IS NULL
+`
 
-func (jr *jobRepository) FindAllJobs() ([]*model.JobExperiences, error) {
-	var jobs = make([]*model.JobExperiences, 0)
-
+func (jr *jobRepository) FindAllJobs() ([]*model.Job, error) {
+	var jobs = make([]*model.Job, 0)
+	
 	err := jr.db.Select(&jobs, queryFindAllJobs)
 	return jobs, err
 }
