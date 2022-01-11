@@ -8,5 +8,3 @@ CREATE TABLE IF NOT EXISTS "media_file" (
     source varchar(25) default 'internal' not null,
     created_at timestamp default now() not null
 );
-
-CREATE UNIQUE INDEX media_file_id_uindex ON "media_file" (id);

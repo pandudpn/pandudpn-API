@@ -11,5 +11,3 @@ CREATE TABLE IF NOT EXISTS "projects" (
     updated_at timestamp,
     deleted_at timestamp
 );
-
-CREATE UNIQUE INDEX projects_id_uindex ON "projects" (id);

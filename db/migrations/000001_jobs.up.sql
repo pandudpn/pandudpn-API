@@ -11,5 +11,3 @@ CREATE TABLE IF NOT EXISTS "jobs" (
     updated_at timestamp,
     deleted_at timestamp
 );
-
-CREATE UNIQUE INDEX jobs_id_uindex ON "jobs" (id);

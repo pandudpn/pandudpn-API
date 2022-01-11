@@ -13,7 +13,5 @@ CREATE TABLE IF NOT EXISTS "project_images" (
     created_at timestamp default now()
 );
 
-CREATE UNIQUE INDEX project_images_id_uindex ON "project_images" (id);
-
 CREATE INDEX project_images_index
     ON "project_images" (project_id ASC);
