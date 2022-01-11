@@ -13,13 +13,13 @@ type SqlDbc interface {
 	Preparex(query string) (*sqlx.Stmt, error)
 	Get(dest interface{}, query string, args ...interface{}) error
 	Select(dest interface{}, query string, args ...interface{}) error
-	// create transaction
+	// Begin create transaction
 	Begin() *sql.Tx
-	// If you want support transactional
-	Transactioner
+	// Transaction If you want support transactional
+	Transaction
 }
 
-type Transactioner interface {
+type Transaction interface {
 	// Rollback a transaction
 	Rollback() error
 	// Commit a transaction
