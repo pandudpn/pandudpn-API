@@ -11,13 +11,15 @@ import (
 )
 
 type Route struct {
-	Middleware    middleware.MiddlewareInterface
-	JobController controller.JobControllerInterface
+	Middleware        middleware.MiddlewareInterface
+	JobController     controller.JobControllerInterface
+	VisitorController controller.VisitorControllerInterface
 }
 
-func NewRouter(jc controller.JobControllerInterface) *Route {
+func NewRouter(jc controller.JobControllerInterface, vc controller.VisitorControllerInterface) *Route {
 	return &Route{
-		JobController: jc,
+		JobController:     jc,
+		VisitorController: vc,
 	}
 }
 
@@ -28,6 +30,8 @@ func (r *Route) Router() {
 	e.Use(echo.WrapMiddleware(r.Middleware.Logger))
 
 	e.GET("/jobs", r.JobController.FindHandler)
+
+	e.POST("/visitors", r.VisitorController.NewVisitorHandler)
 
 	port := fmt.Sprintf(":%d", viper.GetInt("PORT"))
 	e.Start(port)
