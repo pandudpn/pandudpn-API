@@ -18,6 +18,11 @@ import (
 const layoutDateTime = "02 Jan 2006"
 
 type jobResponse struct {
+	FullTime  []*jobData `json:"fullTime"`
+	Freelance []*jobData `json:"freelance"`
+}
+
+type jobData struct {
 	Id           uuid.UUID    `json:"id"`
 	Office       string       `json:"office"`
 	As           string       `json:"as"`
@@ -45,8 +50,8 @@ func Response(ctx context.Context, value interface{}) response.OutputResponseInt
 	return response.Success(ctx, http.StatusOK, jobs)
 }
 
-func createJobsResponse(jobs []*model.Job) []*jobResponse {
-	var jobsres = make([]*jobResponse, 0)
+func createJobsResponse(jobs []*model.Job) *jobResponse {
+	var jobsres = new(jobResponse)
 
 	for _, job := range jobs {
 		end := time.Now().UTC()
@@ -59,7 +64,7 @@ func createJobsResponse(jobs []*model.Job) []*jobResponse {
 		totalDuration := end.Sub(job.StartAt)
 		total := math.Ceil(totalDuration.Seconds() / 2600640)
 
-		jobres := &jobResponse{
+		data := &jobData{
 			Id:           job.Id,
 			Description:  job.Description,
 			EndAt:        nullTime.ValueOrZeroPtr(),
@@ -76,10 +81,14 @@ func createJobsResponse(jobs []*model.Job) []*jobResponse {
 		}
 
 		if nullTime.IsNil() {
-			jobres.Formatted.EndAt = "Sekarang"
+			data.Formatted.EndAt = "Sekarang"
 		}
 
-		jobsres = append(jobsres, jobres)
+		if job.IsFullTime {
+			jobsres.FullTime = append(jobsres.FullTime, data)
+		} else {
+			jobsres.Freelance = append(jobsres.Freelance, data)
+		}
 	}
 
 	return jobsres
