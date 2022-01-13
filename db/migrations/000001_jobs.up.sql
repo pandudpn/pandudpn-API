@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS "jobs" (
     still_working bool default false,
     start_at timestamp not null,
     end_at timestamp,
+    "as" varchar(100) default 'Backend Developer' not null,
     created_at timestamp default now() not null,
     updated_at timestamp,
     deleted_at timestamp

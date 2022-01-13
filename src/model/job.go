@@ -14,6 +14,7 @@ type Job struct {
 	EndAt        sql.NullTime `db:"end_at"`
 	Description  string       `db:"description"`
 	StillWorking bool         `db:"still_working"`
+	As           string       `db:"as"`
 	CreatedAt    time.Time    `db:"created_at"`
 	UpdatedAt    sql.NullTime `db:"updated_at"`
 	DeletedAt    sql.NullTime `db:"deleted_at"`
