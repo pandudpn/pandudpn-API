@@ -6,6 +6,12 @@ type NullString struct {
 	sql.NullString
 }
 
+func String(t sql.NullString) NullString {
+	return NullString{
+		t,
+	}
+}
+
 // NewStringFrom creates a new String that will never be blank.
 func NewStringFrom(s string) NullString {
 	if s == "" {
@@ -45,7 +51,7 @@ func NewStringFromPtr(s *string) NullString {
 }
 
 // ValueOrZero returns the inner value if valid, otherwise zero.
-func (n *NullString) ValueOrZero() string {
+func (n NullString) ValueOrZero() string {
 	if n.Valid {
 		return n.String
 	}
@@ -53,7 +59,7 @@ func (n *NullString) ValueOrZero() string {
 }
 
 // ValueOrZeroPtr returns the inner value if valid, otherwise nil.
-func (n *NullString) ValueOrZeroPtr() *string {
+func (n NullString) ValueOrZeroPtr() *string {
 	if n.Valid {
 		return &n.String
 	}
@@ -61,6 +67,6 @@ func (n *NullString) ValueOrZeroPtr() *string {
 }
 
 // IsNil returns true for null String, for potential future omitempty support.
-func (n *NullString) IsNil() bool {
+func (n NullString) IsNil() bool {
 	return !n.Valid
 }

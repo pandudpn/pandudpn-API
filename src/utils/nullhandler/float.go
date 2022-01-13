@@ -6,6 +6,12 @@ type NullFloat64 struct {
 	sql.NullFloat64
 }
 
+func Float(t sql.NullFloat64) NullFloat64 {
+	return NullFloat64{
+		t,
+	}
+}
+
 // NewFloatFrom creates a new Float64 that will never be blank.
 func NewFloatFrom(f float64) NullFloat64 {
 	if f == 0 {
@@ -45,7 +51,7 @@ func NewFloatFromPtr(f *float64) NullFloat64 {
 }
 
 // ValueOrZero returns the inner value if valid, otherwise zero.
-func (n *NullFloat64) ValueOrZero() float64 {
+func (n NullFloat64) ValueOrZero() float64 {
 	if n.Valid {
 		return n.Float64
 	}
@@ -53,7 +59,7 @@ func (n *NullFloat64) ValueOrZero() float64 {
 }
 
 // ValueOrZeroPtr returns the inner value if valid, otherwise nil.
-func (n *NullFloat64) ValueOrZeroPtr() *float64 {
+func (n NullFloat64) ValueOrZeroPtr() *float64 {
 	if n.Valid {
 		return &n.Float64
 	}
@@ -61,6 +67,6 @@ func (n *NullFloat64) ValueOrZeroPtr() *float64 {
 }
 
 // IsNil returns true for null Float, for potential future omitempty support.
-func (n *NullFloat64) IsNil() bool {
+func (n NullFloat64) IsNil() bool {
 	return !n.Valid
 }

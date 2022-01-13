@@ -9,6 +9,12 @@ type NullTime struct {
 	sql.NullTime
 }
 
+func Time(t sql.NullTime) NullTime {
+	return NullTime{
+		t,
+	}
+}
+
 // NewTimeFrom creates a new Int64 that will never be blank.
 func NewTimeFrom(t time.Time) NullTime {
 	if t.IsZero() {
@@ -48,7 +54,7 @@ func NewTimeFromPtr(t *time.Time) NullTime {
 }
 
 // ValueOrZero returns the inner value if valid, otherwise zero.
-func (n *NullTime) ValueOrZero() time.Time {
+func (n NullTime) ValueOrZero() time.Time {
 	if n.Valid {
 		return n.Time
 	}
@@ -56,7 +62,7 @@ func (n *NullTime) ValueOrZero() time.Time {
 }
 
 // ValueOrZeroPtr returns the inner value if valid, otherwise nil.
-func (n *NullTime) ValueOrZeroPtr() *time.Time {
+func (n NullTime) ValueOrZeroPtr() *time.Time {
 	if n.Valid {
 		return &n.Time
 	}
@@ -64,6 +70,6 @@ func (n *NullTime) ValueOrZeroPtr() *time.Time {
 }
 
 // IsNil returns true for null time.Time, for potential future omitempty support.
-func (n *NullTime) IsNil() bool {
+func (n NullTime) IsNil() bool {
 	return !n.Valid
 }

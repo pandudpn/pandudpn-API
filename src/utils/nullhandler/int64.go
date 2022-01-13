@@ -6,6 +6,12 @@ type NullInt64 struct {
 	sql.NullInt64
 }
 
+func Int(t sql.NullInt64) NullInt64 {
+	return NullInt64{
+		t,
+	}
+}
+
 // NewIntFrom creates a new Int64 that will never be blank.
 func NewIntFrom(f int64) NullInt64 {
 	if f == 0 {
@@ -45,7 +51,7 @@ func NewIntFromPtr(f *int64) NullInt64 {
 }
 
 // ValueOrZero returns the inner value if valid, otherwise zero.
-func (n *NullInt64) ValueOrZero() int64 {
+func (n NullInt64) ValueOrZero() int64 {
 	if n.Valid {
 		return n.Int64
 	}
@@ -53,7 +59,7 @@ func (n *NullInt64) ValueOrZero() int64 {
 }
 
 // ValueOrZeroPtr returns the inner value if valid, otherwise nil.
-func (n *NullInt64) ValueOrZeroPtr() *int64 {
+func (n NullInt64) ValueOrZeroPtr() *int64 {
 	if n.Valid {
 		return &n.Int64
 	}
@@ -61,6 +67,6 @@ func (n *NullInt64) ValueOrZeroPtr() *int64 {
 }
 
 // IsNil returns true for null Integer, for potential future omitempty support.
-func (n *NullInt64) IsNil() bool {
+func (n NullInt64) IsNil() bool {
 	return !n.Valid
 }
