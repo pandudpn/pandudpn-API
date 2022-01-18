@@ -56,6 +56,6 @@ func Errors(ctx context.Context, statusCode int, message string, err error) Outp
 	r.Status = false
 	r.ErrorMessage = message
 
-	logger.Response(ctx, statusCode, nil, err)
+	logger.Response(ctx, statusCode, r, err)
 	return r
 }
