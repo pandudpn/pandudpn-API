@@ -44,9 +44,9 @@ func Success(ctx context.Context, statusCode int, data interface{}) OutputRespon
 	r := &response{}
 	r.Status = true
 	r.StatusCode = statusCode
+	logger.Response(ctx, statusCode, data, nil)
 	r.Data = data
 
-	logger.Response(ctx, statusCode, data, nil)
 	return r
 }
 
