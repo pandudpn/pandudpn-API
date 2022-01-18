@@ -18,7 +18,7 @@ import (
 const layoutDateTime = "02 Jan 2006"
 
 type jobResponse struct {
-	FullTime  []*jobData `json:"fullTime"`
+	FullTime  []*jobData `json:"full_time"`
 	Freelance []*jobData `json:"freelance"`
 }
 
@@ -26,18 +26,18 @@ type jobData struct {
 	Id           uuid.UUID    `json:"id"`
 	Office       string       `json:"office"`
 	As           string       `json:"as"`
-	StartAt      time.Time    `json:"startAt"`
-	EndAt        *time.Time   `json:"endAt"`
+	StartAt      time.Time    `json:"start_at"`
+	EndAt        *time.Time   `json:"end_at"`
 	Description  string       `json:"description"`
-	StillWorking bool         `json:"stillWorking"`
-	TotalWorking float64      `json:"totalWorking"`
+	StillWorking bool         `json:"still_working"`
+	TotalWorking float64      `json:"total_working"`
 	Formatted    jobFormatted `json:"formatted"`
 }
 
 type jobFormatted struct {
-	StartAt      string `json:"startAt"`
-	EndAt        string `json:"endAt"`
-	TotalWorking string `json:"totalWorking"`
+	StartAt      string `json:"start_at"`
+	EndAt        string `json:"end_at"`
+	TotalWorking string `json:"total_working"`
 }
 
 func Response(ctx context.Context, value interface{}) response.OutputResponseInterface {
